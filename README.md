@@ -322,13 +322,14 @@ The agent maintains its workflow state using a structured `TestAgentState` that 
 
 ```python
 class TestAgentState(TypedDict):
-    query:                     str                           # User's natural language query
-    test_cases:                List[Dict[str,Any]]          # Input test cases to be prioritized
-    clusters:                  Optional[List[Dict[str,Any]]] # Semantic clusters (if clustering applied)
-    relevant_clusters:         Optional[List[int]]          # Selected cluster IDs for the query
-    rubric:                    List[Dict[str,Any]]          # Custom evaluation criteria
-    evaluated_test_cases:      List[Dict[str,Any]]          # Test cases with scores and justifications
-    sorted_test_cases:         List[Dict[str,Any]]          # Final prioritized list
+    query:                     str                               # User's natural language query
+    test_cases:                List[Dict[str,Any]]               # Input test cases to be prioritized
+    clusters:                  Optional[List[Dict[str,Any]]]     # Semantic clusters (if clustering applied)
+    relevant_clusters:         Optional[List[int]]               # Selected cluster IDs for the query
+    relevant_test_cases:       Optional[List[int]]               # Test cases from selected clusters
+    rubric:                    List[Dict[str,Any]]               # Custom evaluation criteria
+    evaluated_test_cases:      List[Dict[str,Any]]               # Test cases with scores and justifications
+    sorted_test_cases:         List[Dict[str,Any]]               # Final prioritized list
 ```
 
 This state flows through each node, with each step adding or refining information until the final prioritized test cases are produced.
