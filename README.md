@@ -102,10 +102,22 @@ pip install -r requirements.txt
 ```bash
 # .env file
 OPENAI_API_KEY=your_openai_api_key_here
+
+# Optional: Langfuse tracing (if you want web-based monitoring)
 LANGFUSE_SECRET_KEY=your_langfuse_secret_key_here
 LANGFUSE_PUBLIC_KEY=your_langfuse_public_key_here
 LANGFUSE_HOST=https://cloud.langfuse.com
 ```
+
+**Required Environment Variables:**
+- `OPENAI_API_KEY`: Your OpenAI API key for LLM integration *(Required)*
+
+**Optional Environment Variables (Langfuse Tracing):**
+- `LANGFUSE_SECRET_KEY`: Langfuse secret key for web-based tracing and monitoring
+- `LANGFUSE_PUBLIC_KEY`: Langfuse public key for web-based tracing and monitoring  
+- `LANGFUSE_HOST`: Langfuse host URL (typically https://cloud.langfuse.com)
+
+> **Note:** Langfuse is **not mandatory**. The agent has extensive CLI logging implemented, so you can trace and monitor the agent execution through console output without Langfuse. If you want to use Langfuse's web-based monitoring, you'll need to create a [Langfuse account](https://langfuse.com) first to get your API keys.
 
 **Optional: Virtual Environment**
 If you prefer to use a virtual environment (recommended for isolation):
@@ -114,9 +126,3 @@ python -m venv your-env-name
 source your-env-name/bin/activate  # On Windows: your-env-name\Scripts\activate
 pip install -r requirements.txt
 ```
-
-**Required Environment Variables:**
-- `OPENAI_API_KEY`: Your OpenAI API key for LLM integration
-- `LANGFUSE_SECRET_KEY`: Langfuse secret key for tracing and monitoring
-- `LANGFUSE_PUBLIC_KEY`: Langfuse public key for tracing and monitoring
-- `LANGFUSE_HOST`: Langfuse host URL (typically https://cloud.langfuse.com)
