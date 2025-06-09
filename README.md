@@ -14,7 +14,7 @@ The LangGraph AI agent processes test cases and queries to provide intelligent a
 
 ```
 src/
-├── core/
+├── core/                 # Core components: graph and state
 │   ├── graph.py          # Main LangGraph workflow
 │   └── state.py          # State definitions
 ├── nodes/               # Graph nodes (workflow steps)
@@ -23,12 +23,19 @@ src/
 │   ├── evaluate_test_cases.py
 │   ├── pick_relevant_clusters.py
 │   └── sort_test_cases.py
-├── api/
+├── api/                 # External API connection codes
 │   ├── llm_client.py     # LLM integration
 │   └── tc_file.py        # Test case definitions
-└── utils/
+└── utils/               # Utility functions that nodes use
     └── parse_llm.py      # LLM response parsing
 ```
+
+### Folder Descriptions
+
+- **core/**: Contains the main graph definition and state management
+- **nodes/**: Individual workflow nodes that make up the LangGraph execution steps
+- **api/**: External API connection codes for integrating with LLMs and other services
+- **utils/**: Utility functions and helpers that the nodes use for processing
 
 ## Usage Options
 
@@ -97,12 +104,17 @@ source test-agent-env/bin/activate
 pip install -r requirements.txt
 ```
 
-3. Set up your environment variables (if needed for LLM APIs)
+3. Set up environment variables by creating a `.env` file in the project root:
+```bash
+# .env file
+OPENAI_API_KEY=your_openai_api_key_here
+LANGFUSE_SECRET_KEY=your_langfuse_secret_key_here
+LANGFUSE_PUBLIC_KEY=your_langfuse_public_key_here
+LANGFUSE_HOST=https://cloud.langfuse.com
+```
 
-
-## Architecture
-
-- **LangGraph Agent**: Core AI workflow in `src/core/graph.py`
-- **Flask UI**: Optional web interface in `app.py`
-- **Independence**: The agent works standalone - Flask is just a convenient wrapper
-- **Modularity**: Each workflow step is a separate node for easy maintenance and testing
+**Required Environment Variables:**
+- `OPENAI_API_KEY`: Your OpenAI API key for LLM integration
+- `LANGFUSE_SECRET_KEY`: Langfuse secret key for tracing and monitoring
+- `LANGFUSE_PUBLIC_KEY`: Langfuse public key for tracing and monitoring
+- `LANGFUSE_HOST`: Langfuse host URL (typically https://cloud.langfuse.com)
