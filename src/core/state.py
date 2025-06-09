@@ -5,6 +5,7 @@ class TestAgentState(TypedDict):
   test_cases:                List[Dict[str,Any]]
   clusters:                  Optional[List[Dict[str,Any]]]
   relevant_clusters:         Optional[List[int]]
+  relevant_test_cases:       Optional[List[Dict[str,Any]]]
   rubric:                    List[Dict[str,Any]]
   evaluated_test_cases:      List[Dict[str,Any]]
   sorted_test_cases:         List[Dict[str,Any]]

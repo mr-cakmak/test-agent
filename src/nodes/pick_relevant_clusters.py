@@ -96,9 +96,36 @@ def pick_relevant_clusters(state: TestAgentState):
         selected_count = len(res.get("selected_clusters", []))
         excluded_count = res.get("excluded_count", 0)
         logger.info(f"Selected {selected_count} relevant clusters, excluded {excluded_count}")
+        
+        # Extract test cases from relevant clusters
+        clusters_data = state["clusters"]
+        relevant_clusters = res["selected_clusters"]
+        
+        # Extract cluster IDs from relevant_clusters
+        relevant_cluster_ids = [str(cluster["cluster_id"]) for cluster in relevant_clusters]
+        logger.info(f"Extracting test cases from relevant clusters: {relevant_cluster_ids}")
+        
+        # Find test IDs from relevant clusters
+        relevant_test_ids = []
+        for cluster in clusters_data["clusters"]:
+            if str(cluster["cluster_id"]) in relevant_cluster_ids:
+                relevant_test_ids.extend(cluster["test_ids"])
+                logger.info(f"Cluster {cluster['cluster_id']} ({cluster['name']}) contributed {len(cluster['test_ids'])} test cases")
+        
+        # Convert test IDs to actual test cases
+        relevant_test_cases = []
+        all_test_cases = state["test_cases"]
+        for test_case in all_test_cases:
+            if test_case["id"] in relevant_test_ids:
+                relevant_test_cases.append(test_case)
+        
+        logger.info(f"Extracted {len(relevant_test_cases)} test cases from {len(relevant_cluster_ids)} relevant clusters")
         logger.info("--- COMPLETED PICK_RELEVANT_CLUSTERS NODE ---")
         
-        return {"relevant_clusters" : res["selected_clusters"]}
+        return {
+            "relevant_clusters": res["selected_clusters"],
+            "relevant_test_cases": relevant_test_cases
+        }
     
     except Exception as e:
         logger.error(f"ERROR in pick_relevant_clusters: {str(e)}")

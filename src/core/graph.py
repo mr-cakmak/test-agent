@@ -20,7 +20,7 @@ def is_clustering_needed(state: TestAgentState):
     number_of_tc = len(state["test_cases"])
     logger.info(f"Checking if clustering is needed for {number_of_tc} test cases")
     
-    clustering_treshold = 25
+    clustering_treshold = 15
 
     if number_of_tc > clustering_treshold:
         logger.info(f"Clustering is needed (>{clustering_treshold} test cases)")
@@ -31,9 +31,16 @@ def is_clustering_needed(state: TestAgentState):
 
 def are_all_tc_evaluated(state: TestAgentState):
     num_evaluated_tc = len(state["evaluated_test_cases"])
-    num_tc = len(state["test_cases"])
     
-    logger.info(f"Checking evaluation progress: {num_evaluated_tc}/{num_tc} test cases evaluated")
+    # Determine the total number of test cases to evaluate
+    if state.get("relevant_test_cases") is not None:
+        # When clustering is applied, use relevant test cases count
+        num_tc = len(state["relevant_test_cases"])
+        logger.info(f"Checking evaluation progress: {num_evaluated_tc}/{num_tc} relevant test cases evaluated")
+    else:
+        # When no clustering, use all test cases
+        num_tc = len(state["test_cases"])
+        logger.info(f"Checking evaluation progress: {num_evaluated_tc}/{num_tc} test cases evaluated")
 
     if num_evaluated_tc < num_tc:
         logger.info("Continue evaluation - not all test cases evaluated yet")

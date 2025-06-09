@@ -14,11 +14,26 @@ def evaluate_test_cases(state: TestAgentState):
     
     rubric = state["rubric"]
     
+    # Determine which test cases to use for evaluation
+    if state.get("relevant_test_cases") is not None:
+        # Use filtered test cases from clustering
+        working_test_cases = state["relevant_test_cases"]
+        logger.info(f"Using {len(working_test_cases)} test cases from relevant clusters")
+    else:
+        # Use all test cases (no clustering was applied)
+        working_test_cases = state["test_cases"]
+        logger.info(f"Using all {len(working_test_cases)} test cases (no clustering applied)")
+    
     evaluated_tc_num = len(state["evaluated_test_cases"])
-    tc_num = len(state["test_cases"])
+    tc_num = len(working_test_cases)
+    
+    # Check if all test cases are already evaluated
+    if evaluated_tc_num >= tc_num:
+        logger.info(f"All {tc_num} test cases already evaluated, nothing more to do")
+        return {"evaluated_test_cases": state["evaluated_test_cases"]}
+    
     last_idx = min(evaluated_tc_num + 5, tc_num)
-
-    test_cases_to_evaluate = state["test_cases"][evaluated_tc_num : last_idx]
+    test_cases_to_evaluate = working_test_cases[evaluated_tc_num : last_idx]
 
     logger.info(f"Evaluating test cases {evaluated_tc_num + 1} to {last_idx} out of {tc_num} total")
     logger.info(f"Using rubric with {len(rubric)} dimensions")
