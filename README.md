@@ -45,11 +45,6 @@ The Flask web interface provides an easy way to interact with the AI agent throu
 
 **1. Start the Flask server:**
 ```bash
-./run_ui.sh
-```
-Or manually:
-```bash
-source test-agent-env/bin/activate
 python app.py
 ```
 
@@ -66,7 +61,6 @@ python app.py
 The AI agent can be run independently without the Flask UI:
 
 ```bash
-source test-agent-env/bin/activate
 python main.py
 ```
 
@@ -93,24 +87,26 @@ When using the web UI, you can provide test cases in two ways:
 
 ## Installation
 
-1. Create and activate virtual environment:
-```bash
-python -m venv test-agent-env
-source test-agent-env/bin/activate
-```
-
-2. Install dependencies:
+1. **Install dependencies:**
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Set up environment variables by creating a `.env` file in the project root:
+2. **Set up environment variables** by creating a `.env` file in the project root:
 ```bash
 # .env file
 OPENAI_API_KEY=your_openai_api_key_here
 LANGFUSE_SECRET_KEY=your_langfuse_secret_key_here
 LANGFUSE_PUBLIC_KEY=your_langfuse_public_key_here
 LANGFUSE_HOST=https://cloud.langfuse.com
+```
+
+**Optional: Virtual Environment**
+If you prefer to use a virtual environment (recommended for isolation):
+```bash
+python -m venv your-env-name
+source your-env-name/bin/activate  # On Windows: your-env-name\Scripts\activate
+pip install -r requirements.txt
 ```
 
 **Required Environment Variables:**
