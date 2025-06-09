@@ -10,10 +10,10 @@ logger = logging.getLogger(__name__)
 
 
 def create_rubric(state: TestAgentState):
-    logger.info("📏 STARTING CREATE_RUBRIC NODE")
+    logger.info("--- STARTING CREATE_RUBRIC NODE ---")
     
     query = state["query"]
-    logger.info(f"📝 Creating rubric for query: '{query}'")
+    logger.info(f"Creating rubric for query: '{query}'")
 
     system_prompt = """
             You are a test rubric generation assistant.
@@ -88,18 +88,18 @@ def create_rubric(state: TestAgentState):
     ]
 
     try:
-        logger.info("🤖 Calling LLM to create rubric...")
+        logger.info("Calling LLM to create rubric...")
         response = model.invoke(messages)
         parsed_response = parse_llm_json_response(response.content)
         
         rubric_dimensions = len(parsed_response.get("rubric", []))
-        logger.info(f"✅ Successfully created rubric with {rubric_dimensions} dimensions")
-        logger.info("🏁 COMPLETED CREATE_RUBRIC NODE")
+        logger.info(f"Successfully created rubric with {rubric_dimensions} dimensions")
+        logger.info("--- COMPLETED CREATE_RUBRIC NODE ---")
         
         return {"rubric": parsed_response["rubric"]}
     
     except Exception as e:
-        logger.error(f"❌ Error in create_rubric: {str(e)}")
+        logger.error(f"ERROR in create_rubric: {str(e)}")
         raise
 
   

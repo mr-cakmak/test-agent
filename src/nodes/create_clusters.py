@@ -9,10 +9,10 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(level
 logger = logging.getLogger(__name__)
 
 def create_clusters(state: TestAgentState):
-    logger.info("🔧 STARTING CREATE_CLUSTERS NODE")
+    logger.info("--- STARTING CREATE_CLUSTERS NODE ---")
     
     test_cases = state["test_cases"]
-    logger.info(f"📊 Processing {len(test_cases)} test cases for clustering")
+    logger.info(f"Processing {len(test_cases)} test cases for clustering")
 
     system_prompt = """
             You are a test case clustering assistant.
@@ -58,16 +58,16 @@ def create_clusters(state: TestAgentState):
     ]
 
     try:
-        logger.info("🤖 Calling LLM to create clusters...")
+        logger.info("Calling LLM to create clusters...")
         response = model.invoke(messages)
         clusters_dict = parse_llm_json_response(response.content)
         
         num_clusters = len(clusters_dict.get("clusters", []))
-        logger.info(f"✅ Successfully created {num_clusters} clusters")
-        logger.info("🏁 COMPLETED CREATE_CLUSTERS NODE")
+        logger.info(f"Successfully created {num_clusters} clusters")
+        logger.info("--- COMPLETED CREATE_CLUSTERS NODE ---")
         
         return {"clusters" : clusters_dict}
     
     except Exception as e:
-        logger.error(f"❌ Error in create_clusters: {str(e)}")
+        logger.error(f"ERROR in create_clusters: {str(e)}")
         raise

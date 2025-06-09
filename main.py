@@ -24,31 +24,31 @@ def create_initial_test_state(query: str) -> TestAgentState:
 
 
 def main():
-    logger.info("🚀 STARTING TEST AGENT")
+    logger.info("--- STARTING TEST AGENT ---")
 
     # Initialize Langfuse CallbackHandler for LangGraph/Langchain (tracing)
     langfuse_handler = CallbackHandler()
 
     # create an initial state
     query = "We updated the URL generation algorithm. What should we test?"
-    logger.info(f"📋 Initial query: '{query}'")
+    logger.info(f"Initial query: '{query}'")
     
     initial_state = create_initial_test_state(query)
     initial_state["test_cases"] = nl_test_cases
     
-    logger.info(f"📊 Loaded {len(nl_test_cases)} test cases")
+    logger.info(f"Loaded {len(nl_test_cases)} test cases")
 
     compiled_graph.get_graph().draw_mermaid_png(output_file_path="graph.png")
     
     # run the agent
-    logger.info("🔥 Starting graph execution...")
+    logger.info("Starting graph execution...")
     result = compiled_graph.invoke(
         input=initial_state,
         config={"callbacks": [langfuse_handler]}
     )
     
-    logger.info("🎉 AGENT EXECUTION COMPLETED!")
-    logger.info(f"📈 Final result: {len(result.get('sorted_test_cases', []))} test cases prioritized")
+    logger.info("--- AGENT EXECUTION COMPLETED ---")
+    logger.info(f"Final result: {len(result.get('sorted_test_cases', []))} test cases prioritized")
 
 
 

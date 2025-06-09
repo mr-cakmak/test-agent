@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 def evaluate_test_cases(state: TestAgentState):
-    logger.info("📊 STARTING EVALUATE_TEST_CASES NODE")
+    logger.info("--- STARTING EVALUATE_TEST_CASES NODE ---")
     
     rubric = state["rubric"]
     
@@ -20,8 +20,8 @@ def evaluate_test_cases(state: TestAgentState):
 
     test_cases_to_evaluate = state["test_cases"][evaluated_tc_num : last_idx]
 
-    logger.info(f"📋 Evaluating test cases {evaluated_tc_num + 1} to {last_idx} out of {tc_num} total")
-    logger.info(f"🎯 Using rubric with {len(rubric)} dimensions")
+    logger.info(f"Evaluating test cases {evaluated_tc_num + 1} to {last_idx} out of {tc_num} total")
+    logger.info(f"Using rubric with {len(rubric)} dimensions")
 
     system_prompt = """
     You are a test case scoring assistant.
@@ -89,15 +89,15 @@ def evaluate_test_cases(state: TestAgentState):
     ]
 
     try:
-        logger.info("🤖 Calling LLM to evaluate test cases...")
+        logger.info("Calling LLM to evaluate test cases...")
         response = model.invoke(messages)
         parsed_response = parse_llm_json_response(response.content)
         
-        logger.info(f"✅ Successfully evaluated {len(parsed_response)} test cases")
-        logger.info("🏁 COMPLETED EVALUATE_TEST_CASES NODE")
+        logger.info(f"Successfully evaluated {len(parsed_response)} test cases")
+        logger.info("--- COMPLETED EVALUATE_TEST_CASES NODE ---")
         
         return {"evaluated_test_cases" : state["evaluated_test_cases"] + parsed_response}
     
     except Exception as e:
-        logger.error(f"❌ Error in evaluate_test_cases: {str(e)}")
+        logger.error(f"ERROR in evaluate_test_cases: {str(e)}")
         raise

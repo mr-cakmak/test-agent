@@ -9,13 +9,13 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(level
 logger = logging.getLogger(__name__)
 
 def pick_relevant_clusters(state: TestAgentState):
-    logger.info("🎯 STARTING PICK_RELEVANT_CLUSTERS NODE")
+    logger.info("--- STARTING PICK_RELEVANT_CLUSTERS NODE ---")
     
     clusters = state["clusters"]
     query = state["query"]
     
     total_clusters = len(clusters.get("clusters", []))
-    logger.info(f"📂 Analyzing {total_clusters} clusters for relevance to query: '{query}'")
+    logger.info(f"Analyzing {total_clusters} clusters for relevance to query: '{query}'")
 
     system_prompt = """
       You are a Test Case Cluster Relevance Analyzer. Your role is to efficiently identify which test case clusters are most relevant to a user's testing query, thereby optimizing computational resources by eliminating irrelevant test cases from evaluation.
@@ -89,17 +89,17 @@ def pick_relevant_clusters(state: TestAgentState):
     ]
 
     try:
-        logger.info("🤖 Calling LLM to pick relevant clusters...")
+        logger.info("Calling LLM to pick relevant clusters...")
         response = model.invoke(messages)
         res = parse_llm_json_response(response.content)
         
         selected_count = len(res.get("selected_clusters", []))
         excluded_count = res.get("excluded_count", 0)
-        logger.info(f"✅ Selected {selected_count} relevant clusters, excluded {excluded_count}")
-        logger.info("🏁 COMPLETED PICK_RELEVANT_CLUSTERS NODE")
+        logger.info(f"Selected {selected_count} relevant clusters, excluded {excluded_count}")
+        logger.info("--- COMPLETED PICK_RELEVANT_CLUSTERS NODE ---")
         
         return {"relevant_clusters" : res["selected_clusters"]}
     
     except Exception as e:
-        logger.error(f"❌ Error in pick_relevant_clusters: {str(e)}")
+        logger.error(f"ERROR in pick_relevant_clusters: {str(e)}")
         raise

@@ -16,29 +16,30 @@ agent_graph.add_node("pick_relevant_clusters", pick_relevant_clusters)
 agent_graph.add_node("sort_test_cases", sort_test_cases)
 
 
-
 def is_clustering_needed(state: TestAgentState):
     number_of_tc = len(state["test_cases"])
-    logger.info(f"🔍 Checking if clustering is needed for {number_of_tc} test cases")
+    logger.info(f"Checking if clustering is needed for {number_of_tc} test cases")
     
-    if number_of_tc > 50:
-        logger.info("✅ Clustering is needed (>50 test cases)")
+    clustering_treshold = 10
+
+    if number_of_tc > clustering_treshold:
+        logger.info(f"Clustering is needed (>{clustering_treshold} test cases)")
         return "clustering_is_needed"
     else:
-        logger.info("⏭️  Clustering not needed (≤50 test cases)")
+        logger.info(f"Clustering not needed (<={clustering_treshold} test cases)")
         return "clustering_is_not_needed"
 
 def are_all_tc_evaluated(state: TestAgentState):
     num_evaluated_tc = len(state["evaluated_test_cases"])
     num_tc = len(state["test_cases"])
     
-    logger.info(f"🔍 Checking evaluation progress: {num_evaluated_tc}/{num_tc} test cases evaluated")
+    logger.info(f"Checking evaluation progress: {num_evaluated_tc}/{num_tc} test cases evaluated")
 
     if num_evaluated_tc < num_tc:
-        logger.info("⏩ Continue evaluation - not all test cases evaluated yet")
+        logger.info("Continue evaluation - not all test cases evaluated yet")
         return "not_all_evaluated"
     else:
-        logger.info("✅ All test cases evaluated - proceeding to sort")
+        logger.info("All test cases evaluated - proceeding to sort")
         return "all_evaluated"
 
 
