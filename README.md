@@ -80,30 +80,179 @@ The AI agent uses a **LangGraph-based workflow** with intelligent routing betwee
 
 ### Workflow Nodes
 
+Each node processes specific data structures as the state flows through the workflow:
+
+**Input Test Case Structure:**
+```json
+{
+  "id": "175",
+  "file_path": "tests/test_payment.py",
+  "test_name": "test_payment_processing_success",
+  "summary": "Verifies successful payment processing with valid card details",
+  "steps": [
+    "Arrange: Set up valid payment data and mock payment gateway",
+    "Act: Call process_payment() with valid card details",
+    "Assert: Payment status is 'success' and transaction ID is generated"
+  ],
+  "notes": ["Requires payment gateway mock", "Tests happy path scenario"]
+}
+```
+
 **1. Create Clusters (`create_clusters.py`)**
 - Groups similar test cases together when dealing with large test suites
 - Uses semantic similarity to identify related functionality
 - Only triggered when clustering would improve analysis efficiency
+
+*Input State*: `test_cases` (List of test case objects)
+*Output State*: `clusters` (Cluster groupings)
+
+```json
+{
+  "clusters": [
+    {
+      "cluster_id": "1",
+      "name": "Payment Processing Tests",
+      "description": "Tests related to payment transactions, validation, and processing",
+      "test_ids": ["175", "176", "177"],
+      "keywords": ["payment", "transaction", "gateway", "billing"]
+    },
+    {
+      "cluster_id": "2", 
+      "name": "Authentication Tests",
+      "description": "Tests covering user login, logout, and session management",
+      "test_ids": ["201", "202", "203"],
+      "keywords": ["auth", "login", "session", "security"]
+    }
+  ]
+}
+```
 
 **2. Pick Relevant Clusters (`pick_relevant_clusters.py`)**
 - Analyzes your query to identify which test case clusters are most relevant
 - Filters out unrelated test groups to focus analysis
 - Ensures the agent works efficiently even with hundreds of test cases
 
+*Input State*: `query`, `clusters`
+*Output State*: `relevant_clusters` (Selected clusters with relevance details)
+
+```json
+{
+  "selected_clusters": [
+    {
+      "cluster_id": "1",
+      "relevance_level": "high", 
+      "justification": "Directly related to payment processing functionality mentioned in query"
+    },
+    {
+      "cluster_id": "3",
+      "relevance_level": "medium",
+      "justification": "Authentication tests may be affected by payment flow changes"
+    }
+  ],
+  "excluded_count": 5,
+  "selection_summary": "Selected payment and auth clusters for payment gateway update query"
+}
+```
+
 **3. Create Rubric (`create_rubric.py`)**
 - Dynamically generates evaluation criteria based on your specific query
 - Creates scoring rubrics that align with your testing concerns
 - Adapts to different types of testing needs (security, performance, functionality, etc.)
+
+*Input State*: `query`
+*Output State*: `rubric` (Evaluation criteria)
+
+```json
+{
+  "title": "Payment API Update Test Prioritization",
+  "dimensions": [
+    {
+      "id": "1",
+      "name": "API Coverage",
+      "description": "How directly the test verifies payment API functionality",
+      "weight": 5,
+      "scoring_criteria": {
+        "5": "Directly tests core payment API endpoints",
+        "3": "Tests features using payment API indirectly", 
+        "1": "Minimally related to payment processing",
+        "0": "Unrelated to payment functionality"
+      }
+    },
+    {
+      "id": "2",
+      "name": "Risk Impact",
+      "description": "Potential business impact if this functionality fails",
+      "weight": 4,
+      "scoring_criteria": {
+        "5": "Critical - affects revenue or data integrity",
+        "3": "Moderate - affects user experience",
+        "1": "Low - minor functionality impact",
+        "0": "No significant business impact"
+      }
+    }
+  ]
+}
+```
 
 **4. Evaluate Test Cases (`evaluate_test_cases.py`)**
 - Scores each relevant test case against the generated rubric
 - Considers factors like risk, coverage, and relevance to your query
 - Provides detailed reasoning for each test case's importance
 
+*Input State*: `test_cases` (filtered), `rubric`
+*Output State*: `evaluated_test_cases` (Test cases with scores)
+
+```json
+{
+  "test_name": "test_payment_processing_success",
+  "overall_score": 45,
+  "normalized_score": 0.83,
+  "dimension_scores": [
+    {
+      "dimension_id": "1",
+      "name": "API Coverage", 
+      "raw_score": 5,
+      "weighted_score": 25,
+      "justification": "Directly tests core payment processing API endpoint"
+    },
+    {
+      "dimension_id": "2",
+      "name": "Risk Impact",
+      "raw_score": 5, 
+      "weighted_score": 20,
+      "justification": "Payment failures directly impact revenue and user trust"
+    }
+  ],
+  "explanation": "High priority test as it directly validates the updated payment API and covers critical revenue-affecting functionality."
+}
+```
+
 **5. Sort Test Cases (`sort_test_cases.py`)**
 - Ranks test cases by their evaluation scores
 - Provides a prioritized list with the most critical tests first
 - Includes explanations for why each test case was prioritized
+
+*Input State*: `evaluated_test_cases`
+*Output State*: `sorted_test_cases` (Final prioritized list)
+
+```json
+[
+  {
+    "rank": 1,
+    "test_name": "test_payment_processing_success",
+    "overall_score": 45,
+    "normalized_score": 0.83,
+    "priority_reason": "Critical payment API functionality with high business impact"
+  },
+  {
+    "rank": 2,
+    "test_name": "test_payment_validation_errors", 
+    "overall_score": 38,
+    "normalized_score": 0.71,
+    "priority_reason": "Essential error handling for payment edge cases"
+  }
+]
+```
 
 ### Intelligent Routing
 
