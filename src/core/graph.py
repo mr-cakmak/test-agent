@@ -20,7 +20,7 @@ def is_clustering_needed(state: TestAgentState):
     number_of_tc = len(state["test_cases"])
     logger.info(f"Checking if clustering is needed for {number_of_tc} test cases")
     
-    clustering_treshold = 10
+    clustering_treshold = 25
 
     if number_of_tc > clustering_treshold:
         logger.info(f"Clustering is needed (>{clustering_treshold} test cases)")
