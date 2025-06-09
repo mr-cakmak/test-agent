@@ -10,6 +10,12 @@ The LangGraph AI agent processes test cases and queries to provide intelligent a
 - Evaluate and sort test cases by relevance
 - Provide prioritized recommendations
 
+### Agent Workflow Visualization
+
+![AI Agent Graph](graph.png)
+
+*The above diagram shows the complete workflow of the LangGraph AI agent, including all nodes and their connections.*
+
 ## Project Structure
 
 ```
