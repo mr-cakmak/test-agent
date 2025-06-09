@@ -51,5 +51,7 @@ def main():
     logger.info(f"Final result: {len(result.get('sorted_test_cases', []))} test cases prioritized")
 
 
+if __name__ == "__main__":
+    main()
 
 main()
